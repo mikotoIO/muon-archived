@@ -13,6 +13,10 @@ lazy_static = "1.4.0"
 serde = { version = "1.0.192", features = ["derive"] }
 serde_json = "1.0.108"
 uuid = { version = "1.6.1", features = ["serde", "v4"] }
+time = "0.3.31"
 
 # Scylladb
-scylla = "0.11.1"
+scylla = { version = "0.11.1", features = ["time"] }
+
+muon_core = { path = "../muon-core" }
+muon_macros = { path = "../muon-macros" }
