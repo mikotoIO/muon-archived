@@ -1,8 +1,10 @@
 services:
-    crdb:
-    image: scylladb/scylla
+  scylla:
+    image: scylladb/scylla:5.4
     ports:
       - '9042:9042'
-    command: start-single-node --insecure
     volumes:
-      - 'cockroachdb:/cockroach/cockroach-data'
+      - scylladb:/var/lib/scylla
+
+volumes:
+  scylladb:

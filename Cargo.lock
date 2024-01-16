@@ -491,6 +491,11 @@ dependencies = [
 [[package]]
 name = "muon_core"
 version = "0.1.0"
+dependencies = [
+ "scylla",
+ "time",
+ "uuid",
+]
 
 [[package]]
 name = "muon_macros"

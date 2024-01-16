@@ -29,12 +29,12 @@ pub trait Entity {
 
         let field_cql = fields
             .iter()
-            .map(|x| format!("    {} {},", x.0, x.1))
+            .map(|x| format!("    \"{}\" {},", x.0, x.1))
             .collect::<Vec<_>>()
             .join("\n");
         let pkey_statement = format!("    PRIMARY KEY ({})", meta.pkey);
         format!(
-            "CREATE TABLE {} {{\n{}\n{}\n}}",
+            "CREATE TABLE {} (\n{}\n{}\n);",
             name, field_cql, pkey_statement
         )
     }

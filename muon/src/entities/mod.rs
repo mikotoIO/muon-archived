@@ -14,7 +14,7 @@ pub struct Account {
 }
 
 #[derive(Debug, FromRow, Entity)]
-#[entity(pkey = "token")]
+#[entity(pkey = "\"token\"")]
 pub struct Verification {
     pub token: String,
     pub category: Uuid,
@@ -22,7 +22,7 @@ pub struct Verification {
 }
 
 #[derive(Debug, FromRow, Entity)]
-#[entity(pkey = "token")]
+#[entity(pkey = "\"token\"")]
 pub struct Session {
     pub token: String,
     pub account_id: String,
