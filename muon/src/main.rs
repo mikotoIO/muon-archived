@@ -6,5 +6,5 @@ pub mod entities;
 fn main() {
     dotenv().ok();
     println!("Hello, world!");
-    dbg!(entities::Space::get_scylla_schema());
+    println!("{}", entities::Space::build_table_schema());
 }
