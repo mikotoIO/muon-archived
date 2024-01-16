@@ -32,43 +32,45 @@ impl ScyllaType {
     }
 }
 
-pub fn to_scylla_type(ty: Type) -> ScyllaType {
-    match ty {
-        Type::Path(x) => {
-            let segments = x.path.segments.into_iter().collect::<Vec<_>>();
-            if segments.len() != 1 {
-                panic!("unsupported syntax, sorry about that")
-            }
-            let segment = segments.into_iter().next().unwrap();
-            let name = segment.ident.to_string();
-
-            match segment.arguments {
-                PathArguments::None => ScyllaType::Basic(name),
-                PathArguments::AngleBracketed(param) => {
-                    let param = param
-                        .args
-                        .into_iter()
-                        .filter_map(|x| match x {
-                            syn::GenericArgument::Type(x) => Some(x),
-                            _ => None,
-                        })
-                        .map(|x| to_scylla_type(x))
-                        .collect::<Vec<_>>();
-
-                    // test
-                    match name.as_str() {
-                        "Option" => param[0].clone(),
-                        "Vec" => ScyllaType::List(Box::new(param[0].clone())),
-                        "HashMap" => ScyllaType::HashMap(
-                            Box::new(param[0].clone()),
-                            Box::new(param[1].clone()),
-                        ),
-                        _ => ScyllaType::Unsupported,
-                    }
+impl From<Type> for ScyllaType {
+    fn from(ty: Type) -> Self {
+        match ty {
+            Type::Path(x) => {
+                let segments = x.path.segments.into_iter().collect::<Vec<_>>();
+                if segments.len() != 1 {
+                    panic!("unsupported syntax, sorry about that")
                 }
-                _ => todo!(),
+                let segment = segments.into_iter().next().unwrap();
+                let name = segment.ident.to_string();
+
+                match segment.arguments {
+                    PathArguments::None => ScyllaType::Basic(name),
+                    PathArguments::AngleBracketed(param) => {
+                        let param = param
+                            .args
+                            .into_iter()
+                            .filter_map(|x| match x {
+                                syn::GenericArgument::Type(x) => Some(x),
+                                _ => None,
+                            })
+                            .map(|x| Self::from(x))
+                            .collect::<Vec<_>>();
+
+                        // test
+                        match name.as_str() {
+                            "Option" => param[0].clone(),
+                            "Vec" => ScyllaType::List(Box::new(param[0].clone())),
+                            "HashMap" => ScyllaType::HashMap(
+                                Box::new(param[0].clone()),
+                                Box::new(param[1].clone()),
+                            ),
+                            _ => ScyllaType::Unsupported,
+                        }
+                    }
+                    _ => todo!(),
+                }
             }
+            _ => todo!(),
         }
-        _ => todo!(),
     }
 }
