@@ -17,7 +17,7 @@ impl ScyllaType {
                 "i8" => "tinyint".to_string(),
                 "i16" => "smallint".to_string(),
                 "i32" => "int".to_string(),
-                "i64" => "bigInt".to_string(),
+                "i64" => "bigint".to_string(),
                 "f32" => "float".to_string(),
                 "f64" => "double".to_string(),
                 "String" => "text".to_string(),

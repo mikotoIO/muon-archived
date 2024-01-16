@@ -39,3 +39,10 @@ pub trait Entity {
         )
     }
 }
+
+#[macro_export]
+macro_rules! build_database_definition {
+    [$($x:ident),*] => {
+        vec![$($x::build_table_schema()),*].join("\n\n")
+    };
+}

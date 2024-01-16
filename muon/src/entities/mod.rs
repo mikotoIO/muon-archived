@@ -1,25 +1,28 @@
 use std::collections::HashMap;
 
+use muon_core::Entity;
 use muon_macros::Entity;
 use scylla::{FromRow, FromUserType, SerializeCql};
 use time::OffsetDateTime;
 use uuid::Uuid;
 
-#[derive(Debug, FromRow)]
+#[derive(Debug, FromRow, Entity)]
 pub struct Account {
     pub id: Uuid,
     pub email: String,
     pub passhash: String,
 }
 
-#[derive(Debug, FromRow)]
+#[derive(Debug, FromRow, Entity)]
+#[entity(pkey = "token")]
 pub struct Verification {
     pub token: String,
     pub category: Uuid,
     pub account_id: Uuid,
 }
 
-#[derive(Debug, FromRow)]
+#[derive(Debug, FromRow, Entity)]
+#[entity(pkey = "token")]
 pub struct Session {
     pub token: String,
     pub account_id: String,
@@ -27,7 +30,7 @@ pub struct Session {
     pub expires_at: i64,
 }
 
-#[derive(Debug, FromRow)]
+#[derive(Debug, FromRow, Entity)]
 pub struct User {
     pub id: Uuid,
     pub name: String,
@@ -61,7 +64,7 @@ impl Default for Space {
     }
 }
 
-#[derive(Debug, FromUserType, SerializeCql)]
+#[derive(Debug, FromUserType, SerializeCql, Entity)]
 pub struct Role {
     pub id: Uuid,
     pub name: String,
@@ -71,7 +74,7 @@ pub struct Role {
     pub order: i32,
 }
 
-#[derive(Debug, FromRow)]
+#[derive(Debug, FromRow, Entity)]
 pub struct SpaceMember {
     pub space_id: Uuid,
     pub user_id: Uuid,
@@ -79,7 +82,7 @@ pub struct SpaceMember {
     pub name: Option<String>,
 }
 
-#[derive(Debug, FromRow)]
+#[derive(Debug, FromRow, Entity)]
 pub struct Invite {
     pub id: String,
     pub space_id: Uuid,
@@ -88,7 +91,8 @@ pub struct Invite {
     pub created_at: OffsetDateTime,
 }
 
-#[derive(Debug, FromRow)]
+#[derive(Debug, FromRow, Entity)]
+#[entity(pkey = "space_id, id")]
 pub struct Channel {
     pub space_id: Uuid,
     pub id: Uuid,
@@ -98,7 +102,7 @@ pub struct Channel {
     pub parent_id: Option<Uuid>,
 }
 
-#[derive(Debug, FromRow)]
+#[derive(Debug, FromRow, Entity)]
 pub struct Message {
     pub channel_id: Uuid,
     pub id: i64, // Snowflake
@@ -106,4 +110,20 @@ pub struct Message {
 
     pub author_id: Uuid,
     pub content: String,
+}
+
+pub fn build_schemas() {
+    let x = muon_core::build_database_definition![
+        Account,
+        Verification,
+        Session,
+        User,
+        Space,
+        Role,
+        SpaceMember,
+        Invite,
+        Channel,
+        Message
+    ];
+    println!("{}", x);
 }
